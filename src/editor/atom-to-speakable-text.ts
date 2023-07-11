@@ -24,7 +24,7 @@ declare global {
 // ----                                             ----
 // <emphasis>WORD</emphasis>                        [[emph +]]WORD
 // <break time="150ms"/>                            [[slc 150]]
-// <say-as interpret-as="character">A</say-as>      [[char LTRL] A [[char NORM]]
+// <say-as interpret-as="characters">A</say-as>      [[char LTRL] A [[char NORM]]
 
 // https://developer.apple.com/library/content/documentation/UserExperience/Conceptual/SpeechSynthesisProgrammingGuide/FineTuning/FineTuning.html#//apple_ref/doc/uid/TP40004365-CH5-SW3
 
@@ -49,8 +49,8 @@ const PRONUNCIATION: Record<string, string> = {
   ';': '<break time="150ms"/> semi-colon <break time="150ms"/>',
   ',': '<break time="150ms"/> comma  <break time="150ms"/>',
   '|': '<break time="150ms"/>Vertical bar<break time="150ms"/>',
-  '(': '<break time="150ms"/>Open paren. <break time="150ms"/>',
-  ')': '<break time="150ms"/> Close paren. <break time="150ms"/>',
+  '(': 'of <break time="150ms"/>',
+  ')': '<break time="150ms"/>',
   '=': 'equals ',
   '<': 'is less than ',
   '\\lt': 'is less than ',
@@ -86,13 +86,13 @@ const PRONUNCIATION: Record<string, string> = {
   '\\in': 'element of ',
 
   '\\N':
-    'the set <break time="150ms"/><say-as interpret-as="character">n</say-as>',
+    'the set <break time="150ms"/><say-as interpret-as="characters">n</say-as>',
   '\\C':
-    'the set <break time="150ms"/><say-as interpret-as="character">c</say-as>',
+    'the set <break time="150ms"/><say-as interpret-as="characters">c</say-as>',
   '\\Z':
-    'the set <break time="150ms"/><say-as interpret-as="character">z</say-as>',
+    'the set <break time="150ms"/><say-as interpret-as="characters">z</say-as>',
   '\\Q':
-    'the set <break time="150ms"/><say-as interpret-as="character">q</say-as>',
+    'the set <break time="150ms"/><say-as interpret-as="characters">q</say-as>',
 
   '\\infty': 'infinity ',
 
@@ -105,12 +105,12 @@ const PRONUNCIATION: Record<string, string> = {
 
   '\\Rightarrow': 'implies ',
 
-  '\\lparen': '<break time="150ms"/>open paren<break time="150ms"/>',
-  '\\rparen': '<break time="150ms"/>close paren<break time="150ms"/>',
-  '\\lbrace': '<break time="150ms"/>open brace<break time="150ms"/>',
-  '\\{': '<break time="150ms"/>open brace<break time="150ms"/>',
-  '\\rbrace': '<break time="150ms"/>close brace<break time="150ms"/>',
-  '\\}': '<break time="150ms"/>close brace<break time="150ms"/>',
+  '\\lparen': 'of <break time="150ms"/>',
+  '\\rparen': '<break time="150ms"/>',
+  '\\lbrace': 'of <break time="150ms"/>',
+  '\\{': 'of <break time="150ms"/>',
+  '\\rbrace': '<break time="150ms"/>',
+  '\\}': '<break time="150ms"/>',
   '\\langle': '<break time="150ms"/>left angle bracket<break time="150ms"/>',
   '\\rangle': '<break time="150ms"/>right angle bracket<break time="150ms"/>',
   '\\lfloor': '<break time="150ms"/>open floor<break time="150ms"/>',
@@ -202,9 +202,9 @@ function atomToSpeakableFragment(
     }
 
     if (/[a-z]/.test(c))
-      return ` <say-as interpret-as="character">${c}</say-as>`;
+      return ` <say-as interpret-as="characters">${c}</say-as>`;
     if (/[A-Z]/.test(c))
-      return `capital <say-as interpret-as="character">${c.toLowerCase()}</say-as>`;
+      return `capital <say-as interpret-as="characters">${c.toLowerCase()}</say-as>`;
     return c;
   }
 
@@ -381,7 +381,7 @@ function atomToSpeakableFragment(
             '8/9': ' eight ninths ',
             // '1/10':     ' one tenth ',
             // '1/12':     ' one twelfth ',
-            // 'x/2':     ' <say-as interpret-as="character">X</say-as> over 2',
+            // 'x/2':     ' <say-as interpret-as="characters">X</say-as> over 2',
           };
           const commonFraction =
             COMMON_FRACTIONS[
@@ -723,15 +723,12 @@ export function atomToSpeakableText(atoms: Atom | Atom[]): string {
         '<prosody rate="' + window.MathfieldElement.speechEngineRate + '">';
     }
     result =
-      `<?xml version="1.0"?><speak version="1.1" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">` +
-      '<amazon:auto-breaths>' +
       prosody +
       '<p><s>' +
       result +
       '</s></p>' +
-      (prosody ? '</prosody>' : '') +
-      '</amazon:auto-breaths>' +
-      '</speak>';
+      (prosody ? '</prosody>' : '')
+     ;
   } else if (
     window.MathfieldElement.textToSpeechMarkup === 'mac' &&
     osPlatform() === 'macos'
